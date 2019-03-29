@@ -1,11 +1,7 @@
 {
 	"folders": [
 		{
-			"path": "C:\\Users\\James\\Documents\\Uni Stuff\\Capstone\\04 Software"
-		},
-		{
-			"name": "PAV_ESP32",
-			"path": "C:\\Users\\James\\Documents\\PlatformIO\\Projects\\PAV_ESP32"
+			"path": "PAV_ESP32"
 		}
 	],
 	"settings": {
