@@ -17,7 +17,15 @@
 			"ap.h": "c",
 			"freertos.h": "c",
 			"rtc.h": "c",
-			"stdbool.h": "c"
+			"stdbool.h": "c",
+			"rtc_cntl.h": "c",
+			"rtc_io.h": "c",
+			"stdint.h": "c",
+			"stdlib.h": "c",
+			"uart.h": "c",
+			"timer.h": "c",
+			"timer_group_reg.h": "c",
+			"esp_intr_alloc.h": "c"
 		}
 	}
 }

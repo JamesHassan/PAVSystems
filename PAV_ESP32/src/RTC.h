@@ -12,6 +12,10 @@
 #include "stdlib.h"
 #include "stdbool.h"
 #include <types.h>
+#include "esp_system.h"
+#include "driver/rtc_cntl.h"
+#include "driver/rtc_io.h"
+
 
 //Init
 bool RTC_Init();

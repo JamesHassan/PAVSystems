@@ -10,8 +10,8 @@
 void APInit()
 {
     //
-    printf("Hello World\n ");
-    vTaskDelay(1000/portTICK_PERIOD_MS);
+    // printf("Hello World\n ");
+    // vTaskDelay(1000/portTICK_PERIOD_MS);
 }
 
 //Set
