@@ -31,7 +31,8 @@ timers timer00 =
     .timer_config.alarm_en = TIMER_ALARM_EN,      /*!< Timer alarm enable */
     .timer_config.counter_en = TIMER_PAUSE,    /*!< Counter enable */
     .timer_config.intr_type = TIMER_INTR_LEVEL, /*!< Interrupt mode */
-    .timer_config.counter_dir = TIMER_COUNT_DOWN, /*!< Counter direction  */
+    // .timer_config.counter_dir = TIMER_COUNT_DOWN, /*!< Counter direction  */
+    .timer_config.counter_dir = TIMER_COUNT_UP, /*!< Counter direction  */
     .timer_config.auto_reload = TIMER_AUTORELOAD_EN,   /*!< Timer auto-reload */
     .timer_config.divider = TIMER_DIVDER,
     .timer_intr = 0,
@@ -54,15 +55,15 @@ static void setup()
     err = Timer_Init(timer00); //timer00.timer_config.alarm_en;
     printf("timer_init == %d\n",err);
 
-    err = timer_enable_intr(timer00.timer_group,timer00.timer_num);
-    printf("timer_enable_intr == %d\n",err);
+    // err = timer_enable_intr(timer00.timer_group,timer00.timer_num);
+    // printf("timer_enable_intr == %d\n",err);
 
-    err = timer_isr_register(timer00.timer_group,timer00.timer_num,timer00_isr,0,ESP_INTR_FLAG_IRAM, NULL);
-    // timer_isr_register(                                              void (*fn)(void*), void * arg, int intr_alloc_flags, timer_isr_handle_t *handle);
-    printf("timer_isr_register == %d\n",err);
+    // err = timer_isr_register(timer00.timer_group,timer00.timer_num,timer00_isr,0,ESP_INTR_FLAG_IRAM, NULL);
+    // // timer_isr_register(                                              void (*fn)(void*), void * arg, int intr_alloc_flags, timer_isr_handle_t *handle);
+    // printf("timer_isr_register == %d\n",err);
 
-    err = timer_start(timer00.timer_group, timer00.timer_num);
-    printf("timer_start == %d\n",err);
+    // err = timer_start(timer00.timer_group, timer00.timer_num);
+    // printf("timer_start == %d\n",err);
 
     // timer_queue = xQueueCreate(10, sizeof(timers));
     // xTaskCreate(timer00_isr,"timer00_isr", 2048, NULL, 5, NULL);

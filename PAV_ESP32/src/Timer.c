@@ -40,15 +40,40 @@ bool Timer_Init(timers timerGN,void (*usrFn)(void*), void* usrArg)
     // @TODO: add a for loop and an aray of timers 
     // using the built in timer.h library from the drivers, initialise
     int err;
+    // Config
     err = timer_init(timerGN.timer_group, timerGN.timer_num, &timerGN.timer_config);
     printf("timer_init == %d\n",err);
-    err = timer_set_counter_value(timerGN.timer_group, timerGN.timer_num, (uint64_t)(timerGN.period*TIMER_SCALE));
-    printf("timer_set_counter_value == %d\n",err);
+    // uint64_t temp = 
+    printf("Timer_Val == %d\n",(int)(timerGN.period*TIMER_SCALE));
+    // Timer Pause
+    err = timer_pause(timerGN.timer_group, timerGN.timer_num);
+    printf("timer_pause == %d\n",err);
 
-    err = timer_set_alarm_value(timerGN.timer_group, timerGN.timer_num, 0);
+    /****Counter DOWN*****/
+
+    // err = timer_set_counter_value(timerGN.timer_group, timerGN.timer_num, (uint64_t)(timerGN.period*TIMER_SCALE));
+    // printf("timer_set_counter_value == %d\n",err);
+
+    // err = timer_set_alarm_value(timerGN.timer_group, timerGN.timer_num, 0);
+    // printf("timer_set_alarm_value == %d\n",err);
+    /*********************/
+    /*****Counter UP******/
+    // Set counter value
+    err = timer_set_counter_value(timerGN.timer_group, timerGN.timer_num, 0);
+    printf("timer_set_counter_value == %d\n",err);
+    // Set Alarm Value
+    err = timer_set_alarm_value(timerGN.timer_group, timerGN.timer_num, (uint64_t)(timerGN.period*TIMER_SCALE));
     printf("timer_set_alarm_value == %d\n",err);
-    
-    printf("timer_total_init == %d\n",err);
+    /*********************/
+    // Enable interupt
+    err = timer_enable_intr(timerGN.timer_group,timerGN.timer_num);
+    printf("timer_enable_intr == %d\n",err);
+    // Set ISR
+    err = timer_isr_register(timerGN.timer_group,timerGN.timer_num,timer00_isr,NULL,ESP_INTR_FLAG_IRAM, NULL);
+    printf("timer_isr_register == %d\n",err);
+    //Timer START!
+    err = timer_start(timerGN.timer_group, timerGN.timer_num);
+    printf("timer_start == %d\n",err);
 
 
 
@@ -71,7 +96,13 @@ void IRAM_ATTR timer00_isr(void *arg)
     // (*usrFnTimer00)(usrArgTimer00);
     //timer_set_alarm();
     // Set to reset the interupt flag
-    TIMERG0.int_clr_timers.t0 = 1;
+    // TIMERG0.int_clr_timers.t0 = 1;
+    uint32_t intr_status = TIMERG0.int_st_timers.val;
+    if((intr_status & BIT(0)) && 0 == TIMER_0) {
+        TIMERG0.hw_timer[0].update = 1;
+        TIMERG0.int_clr_timers.t0 = 1;
+        TIMERG0.hw_timer[0].config.alarm_en = 1;
+    }
 
 }
 // //Set
