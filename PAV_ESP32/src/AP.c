@@ -6,12 +6,43 @@
 */
 #include "AP.h"
 
+#include "driver/i2s.h"
+#include "freertos/queue.h"
+
+static const int i2s_num = 0; // i2s port number
+
+static const i2s_config_t i2s_config = {
+     .mode = I2S_MODE_MASTER | I2S_MODE_TX,
+     .sample_rate = 44100,
+     .bits_per_sample = 16,
+     .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
+     .communication_format = I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB,
+     .intr_alloc_flags = 0, // default interrupt priority
+     .dma_buf_count = 8,
+     .dma_buf_len = 64,
+     .use_apll = false
+};
+
+static const i2s_pin_config_t pin_config = {
+    .bck_io_num = 26,
+    .ws_io_num = 25,
+    .data_out_num = 22,
+    .data_in_num = I2S_PIN_NO_CHANGE
+};
+
+
+
 //Init
-void APInit()
+void AP_Init()
 {
-    //
-    // printf("Hello World\n ");
-    // vTaskDelay(1000/portTICK_PERIOD_MS);
+    
+    i2s_driver_install(i2s_num, &i2s_config, 0, NULL);   //install and start i2s driver
+
+    i2s_set_pin(i2s_num, &pin_config); // Set the actual I2S GPIO pins
+
+    i2s_set_sample_rates(i2s_num, i2s_config.sample_rate); //set sample rates
+
+    i2s_driver_uninstall(i2s_num); //stop & destroy i2s driver
 }
 
 //Set

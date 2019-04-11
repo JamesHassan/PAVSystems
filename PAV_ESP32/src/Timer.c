@@ -4,13 +4,14 @@
    @date 2019-04-05
 */
 
-#include "timer.h"
+#include "Timer.h"
 
 // timer defines
 #define MAX_NUM_TIMERS 4
 #define TIMER_DIVDER 8000   // to convert to 100uS from an 80MHz clk
 #define TIMER_SCALE (TIMER_BASE_CLK/TIMER_DIVDER) // 
 
+xQueueHandle local_timer_queue;
 
 // timers timer00 = 
 // {
@@ -30,18 +31,49 @@
 static void *usrArgTimer00;
 static void (*usrFnTimer00)(void*);
 
+void IRAM_ATTR timer00_isr(void *arg)
+{
+    printf("Wifi Connect\n");
 
+    
+    // if (usrFnTimer00)
+    // (*usrFnTimer00)(usrArgTimer00);
+    //timer_set_alarm();
+    // Set to reset the interupt flag
+    // TIMERG0.int_clr_timers.t0 = 1;
+    uint32_t intr_status = TIMERG0.int_st_timers.val;
+    printf("intr_status == %d\n",intr_status);
+
+    if((intr_status & BIT(0)) && 0 == TIMER_0) {
+        TIMERG0.hw_timer[0].update = 1;
+        TIMERG0.int_clr_timers.t0 = 1;
+        TIMERG0.hw_timer[0].config.alarm_en = 1;
+    }
+    intr_status = TIMERG0.int_st_timers.val;
+    printf("intr_status == %d\n",intr_status);
+    xQueueSendFromISR(local_timer_queue, 0, NULL);
+
+}
 
 //Init
-bool Timer_Init(timers timerGN,void (*usrFn)(void*), void* usrArg)
+bool Timer_Init(timers timerGN,void (*usrFn)(void*), void* usrArg, xQueueHandle timer_queue)
 {
     // taskENTER_CRITICAL(); //??
 
     // @TODO: add a for loop and an aray of timers 
     // using the built in timer.h library from the drivers, initialise
     int err;
+    timer_config_t config;
+    config.alarm_en = TIMER_ALARM_EN,      /*!< Timer alarm enable */
+    config.counter_en = TIMER_PAUSE,    /*!< Counter enable */
+    config.intr_type = TIMER_INTR_LEVEL, /*!< Interrupt mode */
+    // .timer_config.counter_dir = TIMER_COUNT_DOWN, /*!< Counter direction  */
+    config.counter_dir = TIMER_COUNT_UP, /*!< Counter direction  */
+    config.auto_reload = TIMER_AUTORELOAD_EN,   /*!< Timer auto-reload */
+    config.divider = TIMER_DIVDER,
+
     // Config
-    err = timer_init(timerGN.timer_group, timerGN.timer_num, &timerGN.timer_config);
+    err = timer_init(timerGN.timer_group, timerGN.timer_num, &config); //&timerGN.timer_config);
     printf("timer_init == %d\n",err);
     // uint64_t temp = 
     printf("Timer_Val == %d\n",(int)(timerGN.period*TIMER_SCALE));
@@ -75,7 +107,12 @@ bool Timer_Init(timers timerGN,void (*usrFn)(void*), void* usrArg)
     err = timer_start(timerGN.timer_group, timerGN.timer_num);
     printf("timer_start == %d\n",err);
 
+    uint32_t intr_status = TIMERG0.int_st_timers.val;
+    printf("intr_status == %d\n",intr_status);
 
+    // uint32_t intr_status = TIMERG0.int_st_timers.val;
+    // printf("intr_status == %d\n",intr_status);
+    local_timer_queue = timer_queue;
 
     usrArgTimer00 = usrArg;
     usrFnTimer00 = usrFn;
@@ -87,24 +124,7 @@ bool Timer_Init(timers timerGN,void (*usrFn)(void*), void* usrArg)
 
 }
 
-void IRAM_ATTR timer00_isr(void *arg)
-{
-    printf("Wifi Connect\n");
 
-    
-    // if (usrFnTimer00)
-    // (*usrFnTimer00)(usrArgTimer00);
-    //timer_set_alarm();
-    // Set to reset the interupt flag
-    // TIMERG0.int_clr_timers.t0 = 1;
-    uint32_t intr_status = TIMERG0.int_st_timers.val;
-    if((intr_status & BIT(0)) && 0 == TIMER_0) {
-        TIMERG0.hw_timer[0].update = 1;
-        TIMERG0.int_clr_timers.t0 = 1;
-        TIMERG0.hw_timer[0].config.alarm_en = 1;
-    }
-
-}
 // //Set
 // void Timer_Set(const uint8_t hours, const uint8_t minutes, const uint8_t seconds)
 // {

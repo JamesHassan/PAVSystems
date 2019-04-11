@@ -52,21 +52,13 @@ static void setup()
     int err;
     //setup and initializations of devices, pins and microcontroller functions
     RTC_Init();
-    err = Timer_Init(timer00); //timer00.timer_config.alarm_en;
+    AP_Init();
+
+    timer_queue = xQueueCreate(10, sizeof(timers));
+    err = Timer_Init(timer00, Timer00CallBack, NULL, timer_queue); //timer00.timer_config.alarm_en;
     printf("timer_init == %d\n",err);
 
-    // err = timer_enable_intr(timer00.timer_group,timer00.timer_num);
-    // printf("timer_enable_intr == %d\n",err);
-
-    // err = timer_isr_register(timer00.timer_group,timer00.timer_num,timer00_isr,0,ESP_INTR_FLAG_IRAM, NULL);
-    // // timer_isr_register(                                              void (*fn)(void*), void * arg, int intr_alloc_flags, timer_isr_handle_t *handle);
-    // printf("timer_isr_register == %d\n",err);
-
-    // err = timer_start(timer00.timer_group, timer00.timer_num);
-    // printf("timer_start == %d\n",err);
-
-    // timer_queue = xQueueCreate(10, sizeof(timers));
-    // xTaskCreate(timer00_isr,"timer00_isr", 2048, NULL, 5, NULL);
+    xTaskCreate(timer00_isr,"timer00_isr", 2048, NULL, 5, NULL);
  
 }
 
@@ -79,15 +71,9 @@ void app_main()
 {
     
     setup();
-    // Start a task to show what pads have been touched
-    //xTaskCreate(&tp_example_read_task, "touch_pad_read_task", 2048, NULL, 5, NULL);
 
-    for (;;)
-    {
-        APInit();
-
-        // printf("Hello World\n ");
-        // vTaskDelay(1000/portTICK_PERIOD_MS);
-        //esp_restart();
-    }
+    // for (;;)
+    // {
+        
+    // }
 }

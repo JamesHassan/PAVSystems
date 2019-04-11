@@ -14,7 +14,7 @@
 #include "driver/i2s.h"         //i2s library
 
 //Init
-void APInit();
+void AP_Init();
 
 //Set
 

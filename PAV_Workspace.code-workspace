@@ -25,7 +25,12 @@
 			"uart.h": "c",
 			"timer.h": "c",
 			"timer_group_reg.h": "c",
-			"esp_intr_alloc.h": "c"
+			"esp_intr_alloc.h": "c",
+			"timer_group_struct.h": "c",
+			"esp_types.h": "c",
+			"esp_wifi.h": "c",
+			"nvs_flash.h": "c",
+			"esp_event_loop.h": "c"
 		}
 	}
 }
