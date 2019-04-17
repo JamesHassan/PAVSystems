@@ -71,8 +71,11 @@ static void device_Init()
 
 void app_main()
 {
+
     
     setup();
+    
+    xTaskCreate(adc_read_task, "ADC read task", 2048, NULL, 5, NULL);
 
     // for (;;)
     // {

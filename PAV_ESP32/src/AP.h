@@ -19,6 +19,8 @@ void AP_Init();
 //Set
 
 //Get
+void adc_read_task(void* arg);
+
 
 //ISR
 
