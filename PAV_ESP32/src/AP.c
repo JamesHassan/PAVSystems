@@ -27,18 +27,18 @@ static const i2s_config_t i2s_config = {
      .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
      .communication_format = I2S_COMM_FORMAT_I2S_MSB, //I2S_COMM_FORMAT_I2S | 
      .intr_alloc_flags = 0, // default interrupt priority
-     .dma_buf_count = 8,
-     .dma_buf_len = 64,
+     .dma_buf_count = 2,
+     .dma_buf_len = 1024,
      .use_apll = true
 };
 
 static const i2s_pin_config_t pin_config = {
-    .ws_io_num = 25,
+    .ws_io_num = 32,
     // .data_out_num = 26,
     // .data_in_num = I2S_PIN_NO_CHANGE,
     .data_out_num = I2S_PIN_NO_CHANGE,
     .data_in_num = 36,
-    .bck_io_num = 26
+    .bck_io_num = 33
 
 };
 
@@ -75,7 +75,7 @@ void adc_read_task(void* arg)
     adc1_config_width(ADC_WIDTH_12Bit);
     adc1_config_channel_atten(ADC1_CHANNEL_0, ADC_ATTEN_11db);
     esp_adc_cal_characteristics_t characteristics;
-    esp_adc_cal_characterize(I2S_ADC_UNIT, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, 125, &characteristics);
+    esp_adc_cal_characterize(I2S_ADC_UNIT, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, 3300, &characteristics);
     while(1) {
         uint32_t voltage;
         esp_adc_cal_get_voltage(I2S_ADC_CHANNEL, &characteristics, &voltage);

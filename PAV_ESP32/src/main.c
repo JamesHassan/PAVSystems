@@ -54,12 +54,12 @@ static void setup()
     RTC_Init();
     AP_Init();
 
-    /* Timers stuff, currently commented out because its done messing up
-    timer_queue = xQueueCreate(10, sizeof(timers));
-    // err = Timer_Init(timer00, Timer00CallBack, NULL, timer_queue); //timer00.timer_config.alarm_en;
-    // printf("timer_init == %d\n",err);
+    /* Timers stuff, currently commented out because its done messing up*/
+    /*timer_queue = xQueueCreate(10, sizeof(timers));
+    err = Timer_Init(timer00, Timer00CallBack, NULL, timer_queue); //timer00.timer_config.alarm_en;
+    printf("timer_init == %d\n",err);
 
-    // xTaskCreate(timer00_isr,"timer00_isr", 2048, NULL, 5, NULL);
+    xTaskCreate(timer00_isr,"timer00_isr", 2048, NULL, 5, NULL);
     */
  
 }

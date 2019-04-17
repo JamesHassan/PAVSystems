@@ -44,14 +44,14 @@ void IRAM_ATTR timer00_isr(void *arg)
     uint32_t intr_status = TIMERG0.int_st_timers.val;
     printf("intr_status == %d\n",intr_status);
 
-    if((intr_status & BIT(0)) && 0 == TIMER_0) {
+    if((intr_status & BIT(0)) ){//&& 0 == TIMER_0) {
         TIMERG0.hw_timer[0].update = 1;
         TIMERG0.int_clr_timers.t0 = 1;
         TIMERG0.hw_timer[0].config.alarm_en = 1;
     }
     intr_status = TIMERG0.int_st_timers.val;
     printf("intr_status == %d\n",intr_status);
-    xQueueSendFromISR(local_timer_queue, 0, NULL);
+    //xQueueSendFromISR(local_timer_queue, 0, NULL);
 
 }
 
