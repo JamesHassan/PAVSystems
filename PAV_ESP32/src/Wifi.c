@@ -26,11 +26,17 @@
 #include "lwip/err.h"
 #include "lwip/sys.h"
 
-#define WIFI_SSID "PAV Systems"
-#define WIFI_PASSWORD "pavsystem5"
+/*Router*/
+// #define WIFI_SSID "PAV Systems"
+// #define WIFI_PASSWORD "pavsystem5"
+/*******/
 
-
+/*Home*/
+#define WIFI_SSID "Hampstead Homies_2.4GHz"
+#define WIFI_PASSWORD "IMGLADYOUEXIST"
+/******/
 //Init
+esp_wifi_init();
 
 
 //Set
