@@ -19,6 +19,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/queue.h"
+
 #include "soc/timer_group_struct.h"
 #include "driver/periph_ctrl.h"
 
@@ -28,11 +29,14 @@ typedef struct  {
     timer_config_t timer_config;
     timer_isr_handle_t timer_intr;
     double period;
-} timers;
+} timers_t;
+
+xQueueHandle timer_queue;
 
 void IRAM_ATTR timer00_isr(void *arg);
 
-bool Timer_Init(timers timerGN,void (*usrFn)(void*), void* usrArg, xQueueHandle timer_queue);
+bool Timer_Init(timers_t timerGN,void (*usrFn)(void*), void* usrArg, xQueueHandle timer_queue);
 
+void timer00_evt(void *arg);
 
 #endif

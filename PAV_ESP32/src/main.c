@@ -25,7 +25,7 @@
 #define TIMER_DIVDER 8000   // to convert to 100uS from an 80MHz clk
 #define TIMER_SCALE (TIMER_BASE_CLK/TIMER_DIVDER) // 
 
-timers timer00 = 
+timers_t timer00 = 
 {
     .timer_group = TIMER_GROUP_0,
     .timer_num = TIMER_0,
@@ -36,11 +36,10 @@ timers timer00 =
     .timer_config.counter_dir = TIMER_COUNT_UP, /*!< Counter direction  */
     .timer_config.auto_reload = TIMER_AUTORELOAD_EN,   /*!< Timer auto-reload */
     .timer_config.divider = TIMER_DIVDER,
-    .timer_intr = 0,
+    //.timer_intr = timer00_isr,
     .period = 10,
 };
 
-xQueueHandle timer_queue;
 
 // Callback Functions
 void Timer00CallBack(void* arg)
@@ -53,7 +52,7 @@ static void setup()
     int err;
     //setup and initializations of devices, pins and microcontroller functions
     
-        // Initialize NVS
+    // Initialize NVS
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         ESP_ERROR_CHECK(nvs_flash_erase());
@@ -68,12 +67,11 @@ static void setup()
     wifi_event_group = xEventGroupCreate();
     WIFI_Init();
     /* Timers stuff, currently commented out because its done messing up*/
-    /*timer_queue = xQueueCreate(10, sizeof(timers));
+    timer_queue = xQueueCreate(10, sizeof(timers_t));
     err = Timer_Init(timer00, Timer00CallBack, NULL, timer_queue); //timer00.timer_config.alarm_en;
     printf("timer_init == %d\n",err);
 
-    xTaskCreate(timer00_isr,"timer00_isr", 2048, NULL, 5, NULL);
-    */
+    
  
 }
 
@@ -87,7 +85,9 @@ void app_main()
     setup();
     
     xTaskCreate(&printWiFiIP,"printWiFiIP",2048,NULL,5,NULL);
-    xTaskCreate(adc_read_task, "ADC read task", 2048, NULL, 5, NULL);    
+    // xTaskCreate(adc_read_task, "ADC read task", 2048, NULL, 5, NULL);    
+    xTaskCreate(timer00_evt,"timer00_evt", 2048, NULL, 5, NULL);
+
 
     // for (;;)
     // {

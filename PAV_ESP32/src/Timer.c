@@ -13,7 +13,9 @@
 
 xQueueHandle local_timer_queue;
 
-// timers timer00 = 
+int isr_reg = 1;
+
+// timers_t timer00 = 
 // {
 //     .timer_group = TIMER_GROUP_0,
 //     .timer_num = TIMER_0,
@@ -33,51 +35,52 @@ static void (*usrFnTimer00)(void*);
 
 void IRAM_ATTR timer00_isr(void *arg)
 {
-    printf("Wifi Connect\n");
+    //printf("Wifi Connect\n");
 
-    
-    // if (usrFnTimer00)
-    // (*usrFnTimer00)(usrArgTimer00);
-    //timer_set_alarm();
-    // Set to reset the interupt flag
-    // TIMERG0.int_clr_timers.t0 = 1;
+    int timer_num = (int)arg;
+    timers_t evt;
+    evt.timer_num = timer_num;
+
     uint32_t intr_status = TIMERG0.int_st_timers.val;
-    printf("intr_status == %d\n",intr_status);
 
-    if((intr_status & BIT(0)) ){//&& 0 == TIMER_0) {
-        TIMERG0.hw_timer[0].update = 1;
-        TIMERG0.int_clr_timers.t0 = 1;
-        TIMERG0.hw_timer[0].config.alarm_en = 1;
+    if((intr_status & BIT(timer_num)) ){//&& 0 == TIMER_0) {
+        TIMERG0.hw_timer[timer_num].update = 1;
+        if (timer_num == 0)
+            TIMERG0.int_clr_timers.t0 = 1;
+        else if (timer_num == 1)
+            TIMERG0.int_clr_timers.t1 = 1;
+        TIMERG0.hw_timer[timer_num].config.alarm_en = 1;
     }
     intr_status = TIMERG0.int_st_timers.val;
-    printf("intr_status == %d\n",intr_status);
-    //xQueueSendFromISR(local_timer_queue, 0, NULL);
+    xQueueSendFromISR(timer_queue, &evt, NULL);
 
 }
 
 //Init
-bool Timer_Init(timers timerGN,void (*usrFn)(void*), void* usrArg, xQueueHandle timer_queue)
+bool Timer_Init(timers_t timerGN,void (*usrFn)(void*), void* usrArg, xQueueHandle timer_queue)
 {
     // taskENTER_CRITICAL(); //??
 
     // @TODO: add a for loop and an aray of timers 
     // using the built in timer.h library from the drivers, initialise
     int err;
-    timer_config_t config;
-    config.alarm_en = TIMER_ALARM_EN,      /*!< Timer alarm enable */
-    config.counter_en = TIMER_PAUSE,    /*!< Counter enable */
-    config.intr_type = TIMER_INTR_LEVEL, /*!< Interrupt mode */
-    // .timer_config.counter_dir = TIMER_COUNT_DOWN, /*!< Counter direction  */
-    config.counter_dir = TIMER_COUNT_UP, /*!< Counter direction  */
-    config.auto_reload = TIMER_AUTORELOAD_EN,   /*!< Timer auto-reload */
-    config.divider = TIMER_DIVDER,
+    // timer_config_t config;
+    // config.alarm_en = TIMER_ALARM_EN,      /*!< Timer alarm enable */
+    // config.counter_en = TIMER_PAUSE,    /*!< Counter enable */
+    // config.intr_type = TIMER_INTR_LEVEL, /*!< Interrupt mode */
+    // // .timer_config.counter_dir = TIMER_COUNT_DOWN, /*!< Counter direction  */
+    // config.counter_dir = TIMER_COUNT_UP, /*!< Counter direction  */
+    // config.auto_reload = TIMER_AUTORELOAD_EN,   /*!< Timer auto-reload */
+    // config.divider = TIMER_DIVDER,
 
     // Config
-    err = timer_init(timerGN.timer_group, timerGN.timer_num, &config); //&timerGN.timer_config);
-    printf("timer_init == %d\n",err);
-    // uint64_t temp = 
+    ESP_ERROR_CHECK(timer_init(timerGN.timer_group, timerGN.timer_num, &timerGN.timer_config));
+    // err = timer_init(timerGN.timer_group, timerGN.timer_num, &timerGN.timer_config); // &config); //
+    // printf("timer_init == %d\n",err);
+    // // uint64_t temp = 
     printf("Timer_Val == %d\n",(int)(timerGN.period*TIMER_SCALE));
     // Timer Pause
+    ESP_ERROR_CHECK(timer_pause(timerGN.timer_group, timerGN.timer_num));
     err = timer_pause(timerGN.timer_group, timerGN.timer_num);
     printf("timer_pause == %d\n",err);
 
@@ -91,51 +94,62 @@ bool Timer_Init(timers timerGN,void (*usrFn)(void*), void* usrArg, xQueueHandle 
     /*********************/
     /*****Counter UP******/
     // Set counter value
-    err = timer_set_counter_value(timerGN.timer_group, timerGN.timer_num, 0);
-    printf("timer_set_counter_value == %d\n",err);
+    ESP_ERROR_CHECK(timer_set_counter_value(timerGN.timer_group, timerGN.timer_num, 0));
+    // err = timer_set_counter_value(timerGN.timer_group, timerGN.timer_num, 0);
+    // printf("timer_set_counter_value == %d\n",err);
     // Set Alarm Value
-    err = timer_set_alarm_value(timerGN.timer_group, timerGN.timer_num, (uint64_t)(timerGN.period*TIMER_SCALE));
-    printf("timer_set_alarm_value == %d\n",err);
+    ESP_ERROR_CHECK(timer_set_alarm_value(timerGN.timer_group, timerGN.timer_num, (uint64_t)(timerGN.period*TIMER_SCALE)));
+    // err = timer_set_alarm_value(timerGN.timer_group, timerGN.timer_num, (uint64_t)(timerGN.period*TIMER_SCALE));
+    // printf("timer_set_alarm_value == %d\n",err);
     /*********************/
     // Enable interupt
-    err = timer_enable_intr(timerGN.timer_group,timerGN.timer_num);
-    printf("timer_enable_intr == %d\n",err);
-    // Set ISR
-    err = timer_isr_register(timerGN.timer_group,timerGN.timer_num,timer00_isr,NULL,ESP_INTR_FLAG_IRAM, NULL);
-    printf("timer_isr_register == %d\n",err);
+    ESP_ERROR_CHECK(timer_enable_intr(timerGN.timer_group,timerGN.timer_num));
+    // err = timer_enable_intr(timerGN.timer_group,timerGN.timer_num);
+    // printf("timer_enable_intr == %d\n",err);
+    // // Set ISR
+    // printf("timer_isr_register == %d\n",isr_reg);
+
+    ESP_ERROR_CHECK(timer_isr_register(timerGN.timer_group,timerGN.timer_num,timer00_isr,(void *) timerGN.timer_num,ESP_INTR_FLAG_IRAM, NULL));
+    // if (isr_reg)
+    //     isr_reg = timer_isr_register(timerGN.timer_group,timerGN.timer_num,timer00_isr,(void *) timerGN.timer_num,ESP_INTR_FLAG_IRAM, NULL);
+    // printf("timer_isr_register == %d\n",isr_reg);
     //Timer START!
-    err = timer_start(timerGN.timer_group, timerGN.timer_num);
-    printf("timer_start == %d\n",err);
-
-    uint32_t intr_status = TIMERG0.int_st_timers.val;
-    printf("intr_status == %d\n",intr_status);
-
-    // uint32_t intr_status = TIMERG0.int_st_timers.val;
-    // printf("intr_status == %d\n",intr_status);
-    local_timer_queue = timer_queue;
-
-    usrArgTimer00 = usrArg;
-    usrFnTimer00 = usrFn;
-
-    // taskEXiT_CRITICAL(); //??
-    // timer_start(timerGN.timer_group, timerGN.timer_num);
+    ESP_ERROR_CHECK(timer_start(timerGN.timer_group, timerGN.timer_num));
+    // err = timer_start(timerGN.timer_group, timerGN.timer_num);
+    // printf("timer_start == %d\n",err);
 
     return true;
 
 }
 
+void timer00_evt(void *arg)
+{
+    while (1) {
+        timers_t tempTimer;
+        if (xQueueReceive(timer_queue, &tempTimer, portMAX_DELAY))
+        {
+            printf("Group[%d], timer[%d] alarm event\n", tempTimer.timer_group, tempTimer.timer_num);
 
-// //Set
-// void Timer_Set(const uint8_t hours, const uint8_t minutes, const uint8_t seconds)
-// {
+            /* Print the timer values as visible by this task */
+            printf("-------- TASK TIME --------\n");
+            uint64_t task_counter_value;
+            timer_get_counter_value(tempTimer.timer_group, tempTimer.timer_num, &task_counter_value);
+        }
+    }
+}
 
-// }
+void timer01_evt(void *arg)
+{
+    while (1) {
+        timers_t tempTimer;
+        if (xQueueReceive(timer_queue, &tempTimer, portMAX_DELAY))
+        {
+            printf("Group[%d], timer[%d] alarm event\n", tempTimer.timer_group, tempTimer.timer_num);
 
-// //Enable
-// void Timer_Enable(const bool enable)
-// {
-
-
-// }
-
-//ISR
+            /* Print the timer values as visible by this task */
+            printf("-------- TASK TIME --------\n");
+            uint64_t task_counter_value;
+            timer_get_counter_value(tempTimer.timer_group, tempTimer.timer_num, &task_counter_value);
+        }
+    }
+}
