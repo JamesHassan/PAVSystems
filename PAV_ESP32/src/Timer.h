@@ -31,6 +31,11 @@ typedef struct  {
     double period;
 } timers_t;
 
+// timer defines
+#define MAX_NUM_TIMERS 4
+#define TIMER_DIVDER 8000   // to convert to 100uS from an 80MHz clk
+#define TIMER_SCALE (TIMER_BASE_CLK/TIMER_DIVDER) // 
+
 xQueueHandle timer_queue;
 
 void IRAM_ATTR timer00_isr(void *arg);

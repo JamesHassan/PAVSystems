@@ -6,40 +6,12 @@
 
 #include "Timer.h"
 
-// timer defines
-#define MAX_NUM_TIMERS 4
-#define TIMER_DIVDER 8000   // to convert to 100uS from an 80MHz clk
-#define TIMER_SCALE (TIMER_BASE_CLK/TIMER_DIVDER) // 
-
-xQueueHandle local_timer_queue;
-
-int isr_reg = 1;
-
-// timers_t timer00 = 
-// {
-//     .timer_group = TIMER_GROUP_0,
-//     .timer_num = TIMER_0,
-//     .timer_config.alarm_en = TIMER_ALARM_EN,      /*!< Timer alarm enable */
-//     .timer_config.counter_en = TIMER_PAUSE,    /*!< Counter enable */
-//     .timer_config.intr_type = TIMER_INTR_LEVEL, /*!< Interrupt mode */
-//     .timer_config.counter_dir = TIMER_COUNT_DOWN, /*!< Counter direction  */
-//     .timer_config.auto_reload = TIMER_AUTORELOAD_EN,   /*!< Timer auto-reload */
-//     .timer_config.divider = TIMER_DIVDER,
-//     .timer_intr = 0,
-//     .period = 10,
-// };
-
-//Variables
-static void *usrArgTimer00;
-static void (*usrFnTimer00)(void*);
-
 void IRAM_ATTR timer00_isr(void *arg)
 {
-    //printf("Wifi Connect\n");
-
     int timer_num = (int)arg;
     timers_t evt;
     evt.timer_num = timer_num;
+    evt.timer_group = 0;
 
     uint32_t intr_status = TIMERG0.int_st_timers.val;
 
@@ -59,20 +31,8 @@ void IRAM_ATTR timer00_isr(void *arg)
 //Init
 bool Timer_Init(timers_t timerGN,void (*usrFn)(void*), void* usrArg, xQueueHandle timer_queue)
 {
-    // taskENTER_CRITICAL(); //??
 
-    // @TODO: add a for loop and an aray of timers 
-    // using the built in timer.h library from the drivers, initialise
     int err;
-    // timer_config_t config;
-    // config.alarm_en = TIMER_ALARM_EN,      /*!< Timer alarm enable */
-    // config.counter_en = TIMER_PAUSE,    /*!< Counter enable */
-    // config.intr_type = TIMER_INTR_LEVEL, /*!< Interrupt mode */
-    // // .timer_config.counter_dir = TIMER_COUNT_DOWN, /*!< Counter direction  */
-    // config.counter_dir = TIMER_COUNT_UP, /*!< Counter direction  */
-    // config.auto_reload = TIMER_AUTORELOAD_EN,   /*!< Timer auto-reload */
-    // config.divider = TIMER_DIVDER,
-
     // Config
     ESP_ERROR_CHECK(timer_init(timerGN.timer_group, timerGN.timer_num, &timerGN.timer_config));
     // err = timer_init(timerGN.timer_group, timerGN.timer_num, &timerGN.timer_config); // &config); //
@@ -81,8 +41,8 @@ bool Timer_Init(timers_t timerGN,void (*usrFn)(void*), void* usrArg, xQueueHandl
     printf("Timer_Val == %d\n",(int)(timerGN.period*TIMER_SCALE));
     // Timer Pause
     ESP_ERROR_CHECK(timer_pause(timerGN.timer_group, timerGN.timer_num));
-    err = timer_pause(timerGN.timer_group, timerGN.timer_num);
-    printf("timer_pause == %d\n",err);
+    // err = timer_pause(timerGN.timer_group, timerGN.timer_num);
+    // printf("timer_pause == %d\n",err);
 
     /****Counter DOWN*****/
 
@@ -134,22 +94,8 @@ void timer00_evt(void *arg)
             printf("-------- TASK TIME --------\n");
             uint64_t task_counter_value;
             timer_get_counter_value(tempTimer.timer_group, tempTimer.timer_num, &task_counter_value);
-        }
-    }
-}
+            // printf("%d\n",(int)task_counter_value);
 
-void timer01_evt(void *arg)
-{
-    while (1) {
-        timers_t tempTimer;
-        if (xQueueReceive(timer_queue, &tempTimer, portMAX_DELAY))
-        {
-            printf("Group[%d], timer[%d] alarm event\n", tempTimer.timer_group, tempTimer.timer_num);
-
-            /* Print the timer values as visible by this task */
-            printf("-------- TASK TIME --------\n");
-            uint64_t task_counter_value;
-            timer_get_counter_value(tempTimer.timer_group, tempTimer.timer_num, &task_counter_value);
         }
     }
 }
