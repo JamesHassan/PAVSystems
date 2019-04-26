@@ -17,6 +17,7 @@
 #include "AP.h"
 #include "RTC.h"
 #include "Timer.h"
+#include "Wifi.h"
 
 // Defines
 // Timer
@@ -51,9 +52,12 @@ static void setup()
 {
     int err;
     //setup and initializations of devices, pins and microcontroller functions
-    RTC_Init();
-    AP_Init();
-
+    // RTC_Init();
+    // AP_Init();
+    
+    ESP_ERROR_CHECK( esp_event_loop_init(Wifi_event_handler, NULL) );
+    wifi_event_group = xEventGroupCreate();
+    WIFI_Init();
     /* Timers stuff, currently commented out because its done messing up*/
     /*timer_queue = xQueueCreate(10, sizeof(timers));
     err = Timer_Init(timer00, Timer00CallBack, NULL, timer_queue); //timer00.timer_config.alarm_en;
@@ -75,7 +79,10 @@ void app_main()
     
     setup();
     
-    xTaskCreate(adc_read_task, "ADC read task", 2048, NULL, 5, NULL);
+    // xTaskCreate(adc_read_task, "ADC read task", 2048, NULL, 5, NULL);    
+
+
+    xTaskCreate(&printWiFiIP,"printWiFiIP",2048,NULL,5,NULL);
 
     // for (;;)
     // {
