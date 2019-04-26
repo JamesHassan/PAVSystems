@@ -52,8 +52,17 @@ static void setup()
 {
     int err;
     //setup and initializations of devices, pins and microcontroller functions
-    // RTC_Init();
-    // AP_Init();
+    
+        // Initialize NVS
+    esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK( ret );
+
+    RTC_Init();
+    AP_Init();
     
     ESP_ERROR_CHECK( esp_event_loop_init(Wifi_event_handler, NULL) );
     wifi_event_group = xEventGroupCreate();
@@ -75,14 +84,10 @@ static void device_Init()
 
 void app_main()
 {
-
-    
     setup();
     
-    // xTaskCreate(adc_read_task, "ADC read task", 2048, NULL, 5, NULL);    
-
-
     xTaskCreate(&printWiFiIP,"printWiFiIP",2048,NULL,5,NULL);
+    xTaskCreate(adc_read_task, "ADC read task", 2048, NULL, 5, NULL);    
 
     // for (;;)
     // {

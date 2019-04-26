@@ -8,10 +8,6 @@
 
 void WIFI_Connect()
 {
-   // tcpip_adapter_init();
-
-   // wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-   // ESP_ERROR_CHECK(esp_wifi_init(&cfg));
    wifi_config_t cfg = {
       .sta = {
          .ssid = WIFI_SSID,
@@ -50,8 +46,8 @@ void WIFI_Init()
    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
    ESP_ERROR_CHECK( esp_wifi_init(&cfg) );
    ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
-   WIFI_Connect();
    ESP_ERROR_CHECK( esp_wifi_start() );
+   WIFI_Connect();
 
 }
  
