@@ -19,6 +19,7 @@
 #include "Timer.h"
 #include "Wifi.h"
 
+
 // Defines
 // Timer
 #define MAX_NUM_TIMERS 4
@@ -37,7 +38,7 @@ timers_t timer00 =
     .timer_config.auto_reload = TIMER_AUTORELOAD_EN,   /*!< Timer auto-reload */
     .timer_config.divider = TIMER_DIVDER,
     //.timer_intr = timer00_isr,
-    .period = 10,
+    .period = 30,
 };
 
 timers_t timer01 = 
@@ -52,7 +53,7 @@ timers_t timer01 =
     .timer_config.auto_reload = TIMER_AUTORELOAD_EN,   /*!< Timer auto-reload */
     .timer_config.divider = TIMER_DIVDER,
     //.timer_intr = timer00_isr,
-    .period = 5,
+    .period = 0.05,
 };
 
 // Callback Functions
@@ -66,7 +67,7 @@ static void setup()
     int err;
     //setup and initializations of devices, pins and microcontroller functions
     
-    // Initialize NVS
+    // Initialize NVS - required for Wifi operation
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         ESP_ERROR_CHECK(nvs_flash_erase());

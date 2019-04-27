@@ -32,7 +32,7 @@ void IRAM_ATTR timer00_isr(void *arg)
 bool Timer_Init(timers_t timerGN,void (*usrFn)(void*), void* usrArg, xQueueHandle timer_queue)
 {
 
-    int err;
+    // int err;
     // Config
     ESP_ERROR_CHECK(timer_init(timerGN.timer_group, timerGN.timer_num, &timerGN.timer_config));
     // err = timer_init(timerGN.timer_group, timerGN.timer_num, &timerGN.timer_config); // &config); //
@@ -86,6 +86,7 @@ void timer00_evt(void *arg)
 {
     while (1) {
         timers_t tempTimer;
+
         if (xQueueReceive(timer_queue, &tempTimer, portMAX_DELAY))
         {
             printf("Group[%d], timer[%d] alarm event\n", tempTimer.timer_group, tempTimer.timer_num);
@@ -95,7 +96,14 @@ void timer00_evt(void *arg)
             uint64_t task_counter_value;
             timer_get_counter_value(tempTimer.timer_group, tempTimer.timer_num, &task_counter_value);
             // printf("%d\n",(int)task_counter_value);
-
+            if (tempTimer.timer_num == 0)
+            {
+                // Connect to wifi, send info and disconnect
+            }
+            else if (tempTimer.timer_num == 1)
+            {
+                // Analyse data
+            }
         }
     }
 }
