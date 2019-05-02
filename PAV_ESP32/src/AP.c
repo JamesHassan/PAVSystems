@@ -22,6 +22,8 @@
 #include "AlarmSample.h"
 #include "math.h"
 
+#include "fft.h"
+
 #define M_PI 3.14159265358979323846
 
 static const int i2s_num = 0; // i2s port number
@@ -43,6 +45,8 @@ static const i2s_config_t i2s_config = {
 };
 
 int counter = 0;
+
+// fft_config_t *fft_analysis;
 
 uint16_t rXDma[2] = {0};
 
@@ -77,12 +81,41 @@ void AP_Init()
     printf("ADC Mode == %d\n",err);
     printf ("A Value from sample: %f\n", OriAlrm[2]);
 
+
+
+
     // err = i2s_adc_enable(I2S_NUM_0);
     // printf("ADC Enable == %d\n",err);
     //i2s_driver_uninstall(i2s_num); //stop & destroy i2s driver
-    int i =1;
 }
 
+// Fast-Fourier Transfer
+// fft_config_t *fft_init(int size, fft_type_t type, fft_direction_t direction, float *input, float *output)
+
+void AP_FFT()
+{
+    // input = &OriAlrm;
+    //sizeof(OriAlrm);
+    // fft_analysis->input = (float*) &OriAlrm;
+    
+    fft_config_t *fft_analysis;
+    fft_analysis = fft_init(2048, FFT_COMPLEX, FFT_FORWARD, (float*) &OriAlrm, NULL);
+
+
+    // Too long to execute? might need its own thread... or is it simply that the number of samples wasn't 2^
+    printf("Before execute\n");
+    fft_execute(fft_analysis);
+    printf("After execute\n");
+
+    /*// not a print-able valus
+    for (int i = 0; i <= fft_analysis->size; i++)
+    {
+        printf("Output val == %f\n", (fft_analysis->output[i]));
+    }*/
+    
+    fft_destroy(fft_analysis); 
+
+}
 //Set
 
 //Get

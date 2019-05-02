@@ -16,6 +16,8 @@
 //Init
 void AP_Init();
 
+void AP_FFT();
+
 //Set
 
 //Get
