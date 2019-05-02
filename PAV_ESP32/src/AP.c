@@ -94,15 +94,13 @@ void AP_Init()
 
 void AP_FFT()
 {
-    // input = &OriAlrm;
-    //sizeof(OriAlrm);
-    // fft_analysis->input = (float*) &OriAlrm;
-    
+    // Create an FFT analysis config
     fft_config_t *fft_analysis;
     fft_analysis = fft_init(2048, FFT_COMPLEX, FFT_FORWARD, (float*) &OriAlrm, NULL);
 
 
     // Too long to execute? might need its own thread... or is it simply that the number of samples wasn't 2^
+    // Do the analysis
     printf("Before execute\n");
     fft_execute(fft_analysis);
     printf("After execute\n");
@@ -112,7 +110,7 @@ void AP_FFT()
     {
         printf("Output val == %f\n", (fft_analysis->output[i]));
     }*/
-    
+    // Kill it before it lays eggs.
     fft_destroy(fft_analysis); 
 
 }
