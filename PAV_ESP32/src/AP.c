@@ -20,6 +20,9 @@
 #include "esp_partition.h"
 
 #include "AlarmSample.h"
+#include "math.h"
+
+#define M_PI 3.14159265358979323846
 
 static const int i2s_num = 0; // i2s port number
 
@@ -77,6 +80,7 @@ void AP_Init()
     // err = i2s_adc_enable(I2S_NUM_0);
     // printf("ADC Enable == %d\n",err);
     //i2s_driver_uninstall(i2s_num); //stop & destroy i2s driver
+    int i =1;
 }
 
 //Set
@@ -105,7 +109,7 @@ void adc_read_task(void* arg)
         uint32_t voltage;
         esp_adc_cal_get_voltage(I2S_ADC_CHANNEL, &characteristics, &voltage);
         ESP_LOGI("ADC", "%d mV", voltage);
-        vTaskDelay(200 / portTICK_RATE_MS);
+        vTaskDelay(200 / portTICK_RATE_MS);        
     }
 }
 

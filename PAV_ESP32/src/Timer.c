@@ -102,7 +102,20 @@ void timer00_evt(void *arg)
             }
             else if (tempTimer.timer_num == 1)
             {
+                // FFT
+
+                /*// For checking jitter
+                int level = gpio_get_level(GPIO_NUM_16);
                 // Analyse data
+                if (level)
+                    gpio_set_level(GPIO_NUM_16, 0);
+                else
+                {
+                    gpio_set_level(GPIO_NUM_16, 1);
+
+                }
+                */
+                
             }
         }
     }

@@ -23,6 +23,8 @@
 #include "soc/timer_group_struct.h"
 #include "driver/periph_ctrl.h"
 
+#include "driver/gpio.h"
+
 typedef struct  {
     timer_group_t timer_group;
     timer_idx_t timer_num;

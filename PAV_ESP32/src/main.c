@@ -87,6 +87,15 @@ static void setup()
     printf("timer_init == %d\n",err);
     err = Timer_Init(timer01, Timer00CallBack, NULL, timer_queue); //timer00.timer_config.alarm_en;
     printf("timer_init == %d\n",err);
+    
+    // Set PIN 16 for IO jitter checking
+    gpio_config_t pin16;
+    pin16.pin_bit_mask = GPIO_SEL_16;
+    pin16.mode = GPIO_MODE_INPUT_OUTPUT;
+    pin16.pull_up_en = GPIO_PULLUP_ENABLE;
+    pin16.pull_down_en = GPIO_PULLDOWN_ENABLE;
+    pin16.intr_type = GPIO_INTR_DISABLE;
+    ESP_ERROR_CHECK(gpio_config(&pin16));
  
 }
 
