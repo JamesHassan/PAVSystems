@@ -51,14 +51,20 @@ void WIFI_Init()
 
 }
  
-void printWiFiIP(void *pvParam){
-    printf("printWiFiIP task started \n");
-    while(1){
-        xEventGroupWaitBits(wifi_event_group,BIT0,true,true,portMAX_DELAY);
-        tcpip_adapter_ip_info_t ip_info;
-	    ESP_ERROR_CHECK(tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &ip_info));
-	    printf("IP :  %s\n", ip4addr_ntoa(&ip_info.ip));
-    }
+void printWiFiIP(void *pvParam)
+{
+   while(1)
+   { 
+   xEventGroupWaitBits(wifi_event_group,BIT0,true,true,portMAX_DELAY);
+   tcpip_adapter_ip_info_t ip_info;
+   ESP_ERROR_CHECK(tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &ip_info));
+   printf("IP :  %s\n", ip4addr_ntoa(&ip_info.ip));
+
+   // Turn off Wifi
+   ESP_ERROR_CHECK(esp_wifi_stop());
+   // ESP_ERROR_CHECK(esp_wifi_deinit()); // fails on second entry
+   printf("WIfi Stopped\n");
+   }
 }
 //Set
 

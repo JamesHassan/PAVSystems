@@ -89,20 +89,28 @@ void timer00_evt(void *arg)
 
         if (xQueueReceive(timer_queue, &tempTimer, portMAX_DELAY))
         {
-            printf("Group[%d], timer[%d] alarm event\n", tempTimer.timer_group, tempTimer.timer_num);
+            // printf("Group[%d], timer[%d] alarm event\n", tempTimer.timer_group, tempTimer.timer_num);
 
-            /* Print the timer values as visible by this task */
-            printf("-------- TASK TIME --------\n");
-            uint64_t task_counter_value;
-            timer_get_counter_value(tempTimer.timer_group, tempTimer.timer_num, &task_counter_value);
+            // /* Print the timer values as visible by this task */
+            // printf("-------- TASK TIME --------\n");
+            // uint64_t task_counter_value;
+            // timer_get_counter_value(tempTimer.timer_group, tempTimer.timer_num, &task_counter_value);
             // printf("%d\n",(int)task_counter_value);
             if (tempTimer.timer_num == 0)
             {
                 // Connect to wifi, send info and disconnect
+                // WIFI_Init();
+                // printf("WIfi Inited\n");
+                ESP_ERROR_CHECK(esp_wifi_start());
+
+                // ESP_ERROR_CHECK(esp_wifi_deinit());
+                // printf("WIfi De-nited\n");
+
             }
             else if (tempTimer.timer_num == 1)
             {
                 // FFT
+                AP_FFT();
 
                 // For checking jitter
                 int level = gpio_get_level(GPIO_NUM_16);
@@ -114,10 +122,6 @@ void timer00_evt(void *arg)
                     gpio_set_level(GPIO_NUM_16, 1);
 
                 }
-                
-               AP_FFT();
-
-                
             }
         }
     }

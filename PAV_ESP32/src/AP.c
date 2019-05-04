@@ -101,15 +101,32 @@ void AP_FFT()
 
     // Too long to execute? might need its own thread... or is it simply that the number of samples wasn't 2^
     // Do the analysis
-    printf("Before execute\n");
+    // printf("Before execute\n");
     fft_execute(fft_analysis);
-    printf("After execute\n");
+    // printf("After execute\n");
 
-    /*// not a print-able valus
-    for (int i = 0; i <= fft_analysis->size; i++)
-    {
-        printf("Output val == %f\n", (fft_analysis->output[i]));
-    }*/
+    // if(!counter)
+    // {
+    //     FILE *f = fopen("client.data", "wb");
+    //     fwrite(fft_analysis->output, sizeof(double), sizeof(fft_analysis->output), f);
+    //     counter =1;
+    //     fclose(f);
+    // }
+
+
+    // Print the calculated FFT analysis
+    // for (int i = 0; i <= 2*fft_analysis->size; i++)
+    // {
+    //     printf(", %.5f", (fft_analysis->output[i]));
+    //     i++;
+    // }
+
+    // for (int i = 1; i <= 2*fft_analysis->size; i++)
+    // {
+    //     printf(", %.5f", (fft_analysis->output[i]));
+    //     i++;
+    // }
+
     // Kill it before it lays eggs.
     fft_destroy(fft_analysis); 
 

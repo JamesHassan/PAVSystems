@@ -26,7 +26,7 @@
 #include "driver/gpio.h"
 
 #include "AP.h"
-
+#include "Wifi.h"
 
 typedef struct  {
     timer_group_t timer_group;
