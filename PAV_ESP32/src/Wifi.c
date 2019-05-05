@@ -19,7 +19,7 @@ void WIFI_Connect()
    ESP_ERROR_CHECK( esp_wifi_connect() );
 }
 
-esp_err_t Wifi_event_handler(void *ctx, system_event_t *event)
+esp_err_t WIFI_event_handler(void *ctx, system_event_t *event)
 {
    switch(event->event_id) {
       case SYSTEM_EVENT_STA_START:
@@ -51,7 +51,7 @@ void WIFI_Init()
 
 }
  
-void printWiFiIP(void *pvParam)
+void WIFI_IP(void *pvParam)
 {
    while(1)
    { 
@@ -66,8 +66,3 @@ void printWiFiIP(void *pvParam)
    printf("WIfi Stopped\n");
    }
 }
-//Set
-
-//Get
-
-//ISR

@@ -10,20 +10,27 @@
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"  //FreeRTOS library
 #include "freertos/task.h"      // "freertos/FreeRTOS.h" MUST apear before this!
-#include "esp_system.h"
-#include "driver/i2s.h"         //i2s library
+#include "freertos/queue.h"
 
-//Init
+#include "esp_adc_cal.h"
+#include "esp_system.h"
+#include "esp_spi_flash.h"
+#include "esp_err.h"
+#include "esp_log.h"
+#include "esp_partition.h"
+
+#include "driver/i2s.h"         //i2s library
+#include "driver/adc.h"
+#include "driver/gpio.h"
+#include "math.h"
+#include "fft.h"
+
+/* @brief Sets up the FTM before first use.*/
 void AP_Init();
 
 void AP_FFT();
 
-//Set
-
 //Get
 void adc_read_task(void* arg);
-
-
-//ISR
 
 #endif

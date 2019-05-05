@@ -43,10 +43,10 @@ typedef struct  {
 
 xQueueHandle timer_queue;
 
-void IRAM_ATTR timer00_isr(void *arg);
+void IRAM_ATTR timer0_isr(void *arg);
 
-bool Timer_Init(timers_t timerGN,void (*usrFn)(void*), void* usrArg, xQueueHandle timer_queue);
+bool Timer_Init(timers_t timerGN); //,void (*usrFn)(void*), void* usrArg, xQueueHandle timer_queue);
 
-void timer00_evt(void *arg);
+void timer0_evt(void *arg);
 
 #endif

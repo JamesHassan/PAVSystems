@@ -6,7 +6,7 @@
 
 #include "Timer.h"
 
-void IRAM_ATTR timer00_isr(void *arg)
+void IRAM_ATTR timer0_isr(void *arg)
 {
     int timer_num = (int)arg;
     timers_t evt;
@@ -29,7 +29,7 @@ void IRAM_ATTR timer00_isr(void *arg)
 }
 
 //Init
-bool Timer_Init(timers_t timerGN,void (*usrFn)(void*), void* usrArg, xQueueHandle timer_queue)
+bool Timer_Init(timers_t timerGN) //,void (*usrFn)(void*), void* usrArg, xQueueHandle timer_queue)
 {
 
     // int err;
@@ -69,9 +69,9 @@ bool Timer_Init(timers_t timerGN,void (*usrFn)(void*), void* usrArg, xQueueHandl
     // // Set ISR
     // printf("timer_isr_register == %d\n",isr_reg);
 
-    ESP_ERROR_CHECK(timer_isr_register(timerGN.timer_group,timerGN.timer_num,timer00_isr,(void *) timerGN.timer_num,ESP_INTR_FLAG_IRAM, NULL));
+    ESP_ERROR_CHECK(timer_isr_register(timerGN.timer_group,timerGN.timer_num,timer0_isr,(void *) timerGN.timer_num,ESP_INTR_FLAG_IRAM, NULL));
     // if (isr_reg)
-    //     isr_reg = timer_isr_register(timerGN.timer_group,timerGN.timer_num,timer00_isr,(void *) timerGN.timer_num,ESP_INTR_FLAG_IRAM, NULL);
+    //     isr_reg = timer_isr_register(timerGN.timer_group,timerGN.timer_num,timer0_isr,(void *) timerGN.timer_num,ESP_INTR_FLAG_IRAM, NULL);
     // printf("timer_isr_register == %d\n",isr_reg);
     //Timer START!
     ESP_ERROR_CHECK(timer_start(timerGN.timer_group, timerGN.timer_num));
@@ -82,7 +82,7 @@ bool Timer_Init(timers_t timerGN,void (*usrFn)(void*), void* usrArg, xQueueHandl
 
 }
 
-void timer00_evt(void *arg)
+void timer0_evt(void *arg)
 {
     while (1) {
         timers_t tempTimer;

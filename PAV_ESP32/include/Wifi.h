@@ -1,3 +1,4 @@
+
 /*
    @brief to manage and connect wireless to the base station at periodic intervals. 
    @author James Hassan 11991559
@@ -55,13 +56,13 @@ EventGroupHandle_t wifi_event_group;
 
 // static const char *TAG = "Sensor 1";
 
-esp_err_t Wifi_event_handler(void *ctx, system_event_t *event);
+esp_err_t WIFI_event_handler(void *ctx, system_event_t *event);
 //Init
 void WIFI_Init();
 
 void WIFI_Connect();
 
-void printWiFiIP(void *pvParam);
+void WIFI_IP(void *pvParam);
 
 //Set
 

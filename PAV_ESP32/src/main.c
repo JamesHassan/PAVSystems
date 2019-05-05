@@ -19,6 +19,7 @@
 #include "Timer.h"
 #include "Wifi.h"
 
+#include "esp_spi_flash.h"
 
 // Defines
 // Timer
@@ -37,7 +38,7 @@ timers_t timer00 =
     .timer_config.counter_dir = TIMER_COUNT_UP, /*!< Counter direction  */
     .timer_config.auto_reload = TIMER_AUTORELOAD_EN,   /*!< Timer auto-reload */
     .timer_config.divider = TIMER_DIVDER,
-    //.timer_intr = timer00_isr,
+    //.timer_intr = timer0_isr,
     .period = 30,
 };
 
@@ -52,7 +53,7 @@ timers_t timer01 =
     .timer_config.counter_dir = TIMER_COUNT_UP, /*!< Counter direction  */
     .timer_config.auto_reload = TIMER_AUTORELOAD_EN,   /*!< Timer auto-reload */
     .timer_config.divider = TIMER_DIVDER,
-    //.timer_intr = timer00_isr,
+    //.timer_intr = timer0_isr,
     .period = 0.05,
 };
 
@@ -68,24 +69,24 @@ static void setup()
     //setup and initializations of devices, pins and microcontroller functions
     
     // Initialize NVS - required for Wifi operation
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+    esp_err_t nvserr = nvs_flash_init();
+    if (nvserr == ESP_ERR_NVS_NO_FREE_PAGES || nvserr == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
+        nvserr = nvs_flash_init();
     }
-    ESP_ERROR_CHECK( ret );
+    ESP_ERROR_CHECK( nvserr );
 
-    RTC_Init();
+    // RTC_Init(); // Isn't used and doesn't work - messes with printf
     AP_Init();
     
-    ESP_ERROR_CHECK( esp_event_loop_init(Wifi_event_handler, NULL) );
+    ESP_ERROR_CHECK( esp_event_loop_init(WIFI_event_handler, NULL) );
     wifi_event_group = xEventGroupCreate();
     WIFI_Init();
     /* Timers stuff, currently commented out because its done messing up*/
     timer_queue = xQueueCreate(10, sizeof(timers_t));
-    err = Timer_Init(timer00, Timer00CallBack, NULL, timer_queue); //timer00.timer_config.alarm_en;
+    err = Timer_Init(timer00); //, Timer00CallBack, NULL, timer_queue); //timer00.timer_config.alarm_en;
     printf("timer_init == %d\n",err);
-    err = Timer_Init(timer01, Timer00CallBack, NULL, timer_queue); //timer00.timer_config.alarm_en;
+    err = Timer_Init(timer01); //, Timer00CallBack, NULL, timer_queue); //timer00.timer_config.alarm_en;
     printf("timer_init == %d\n",err);
     
     // Set PIN 16 for IO jitter checking
@@ -99,22 +100,13 @@ static void setup()
  
 }
 
-static void device_Init()
-{
-    // Initialise the device for it's operation 
-}
 
 void app_main()
 {
     setup();
     
-    xTaskCreate(&printWiFiIP,"printWiFiIP",2048,NULL,5,NULL);
+    xTaskCreate(&WIFI_IP,"WIFI_IP",2048,NULL,5,NULL);
     // xTaskCreate(adc_read_task, "ADC read task", 2048, NULL, 5, NULL);    
-    xTaskCreate(timer00_evt,"timer00_evt", 2048, NULL, 5, NULL);
+    xTaskCreate(timer0_evt,"timer0_evt", 2048, NULL, 5, NULL);
 
-
-    // for (;;)
-    // {
-        
-    // }
 }
