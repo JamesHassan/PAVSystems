@@ -107,6 +107,34 @@ void AP_FFT()
 
 }
 
+void AP_Resonator(double *input, int inSize)
+{
+    double fMax = 0;
+    double Fs = 44100; // Should be actual sampling frequency
+    int iCounter = 0;
+    double inputAbs[inSize/2];
+    double outputRes[inSize/2];
+
+    // Find max value
+    for (int i=0; i <= inSize; i = i+2)
+    {
+        inputAbs[iCounter] = (input[i])*(input[i]) + (input[i+1])*(input[i+1]);
+        if (inputAbs[iCounter] > fMax)
+        {
+            fMax = inputAbs[iCounter];
+        }
+        iCounter++;
+    }
+
+    double Omr = (2*M_PI*fMax)/Fs;
+    double r = 0.99995;
+
+    for (int j = 2; j <= sizeof(inputAbs); j++)
+    {
+        outputRes[j] = 2*r*cos(Omr)*outputRes[j-1] - outputRes[j-2]*r*r + inputAbs[j];
+    }
+}
+
 //Get
 void adc_read_task(void* arg)
 {
@@ -114,7 +142,7 @@ void adc_read_task(void* arg)
     adc1_config_channel_atten(ADC1_CHANNEL_0, ADC_ATTEN_11db);
     esp_adc_cal_characteristics_t characteristics;
     esp_adc_cal_characterize(I2S_ADC_UNIT, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, 3300, &characteristics);
-    size_t bytes_read;
+    // size_t bytes_read;
 
     while(1) {
         // //int i = i2s_adc_start();

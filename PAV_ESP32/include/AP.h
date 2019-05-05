@@ -30,6 +30,8 @@ void AP_Init();
 
 void AP_FFT();
 
+void AP_Resonator(double *input, int inSize);
+
 //Get
 void adc_read_task(void* arg);
 
