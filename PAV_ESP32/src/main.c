@@ -13,13 +13,13 @@
 #include "driver/i2s.h"
 #include "driver/adc.h"
 #include "driver/timer.h"
+#include "esp_spi_flash.h"
+
 // My files
 #include "AP.h"
 #include "RTC.h"
 #include "Timer.h"
 #include "Wifi.h"
-
-#include "esp_spi_flash.h"
 
 // Defines
 // Timer
@@ -38,8 +38,7 @@ timers_t timer00 =
     .timer_config.counter_dir = TIMER_COUNT_UP, /*!< Counter direction  */
     .timer_config.auto_reload = TIMER_AUTORELOAD_EN,   /*!< Timer auto-reload */
     .timer_config.divider = TIMER_DIVDER,
-    //.timer_intr = timer0_isr,
-    .period = 30,
+    .period = 30, // 30s timer
 };
 
 timers_t timer01 = 
@@ -53,16 +52,10 @@ timers_t timer01 =
     .timer_config.counter_dir = TIMER_COUNT_UP, /*!< Counter direction  */
     .timer_config.auto_reload = TIMER_AUTORELOAD_EN,   /*!< Timer auto-reload */
     .timer_config.divider = TIMER_DIVDER,
-    //.timer_intr = timer0_isr,
-    .period = 0.05,
+    .period = 0.05, //50ms timer
 };
 
-// Callback Functions
-void Timer00CallBack(void* arg)
-{
-    printf("Wifi Connect\n");
-}
-
+/* Sets-up all functions and mode for normal operation*/
 static void setup()
 {
     int err;
@@ -99,7 +92,6 @@ static void setup()
     ESP_ERROR_CHECK(gpio_config(&pin16));
  
 }
-
 
 void app_main()
 {

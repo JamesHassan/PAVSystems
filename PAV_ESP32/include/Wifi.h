@@ -1,4 +1,3 @@
-
 /*
    @brief to manage and connect wireless to the base station at periodic intervals. 
    @author James Hassan 11991559
@@ -6,29 +5,6 @@
 */
 #ifndef WIFI_H
 #define WIFI_H
-
-// #include <stdio.h>
-// #include "stdint.h"
-// #include "stdlib.h"
-// #include "stdbool.h"
-// #include <types.h>
-// #include "esp_system.h"
-// #include "esp_types.h"
-// #include "esp_attr.h"
-// #include "esp_event.h"
-
-// #include <string.h>
-// #include "freertos/FreeRTOS.h"
-// #include "freertos/task.h"
-// #include "freertos/event_groups.h"
-// #include "esp_system.h"
-// #include "esp_wifi.h"
-// #include "esp_event_loop.h"
-// #include "esp_log.h"
-// #include "nvs_flash.h"
-
-// #include "lwip/err.h"
-// #include "lwip/sys.h"
 
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
@@ -39,7 +15,6 @@
 #include "esp_system.h"
 #include "esp_log.h"
 #include "nvs_flash.h"
-
 
 /*Router*/
 #define WIFI_SSID "PAV Systems"
@@ -52,21 +27,20 @@
 /******/
 
 EventGroupHandle_t wifi_event_group;
-// const int CONNECTED_BIT = BIT0;
 
-// static const char *TAG = "Sensor 1";
-
+/* @brief For doing different activities reagrding the state the WIFI reciever is in.
+@param void *ctx is only used for the initialization.
+@param system_event_t *event is used to check what state/event has occured regarding the sucess or failure in setting up the device as STA.*/
 esp_err_t WIFI_event_handler(void *ctx, system_event_t *event);
-//Init
+
+/* @brief Sets up the required functions and modes for any Wifi function.*/
 void WIFI_Init();
 
+/* @brief Connects the device to pre-defined router pertaining to #define WIFI_SSID #define WIFI_PASSWORD.*/
 void WIFI_Connect();
 
+/* @brief Prints the IP address and stops wifi.
+@param void* pvParam is a pointer to any arguments passed in.*/
 void WIFI_IP(void *pvParam);
 
-//Set
-
-//Get
-
-//ISR
 #endif

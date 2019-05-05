@@ -48,7 +48,6 @@ void WIFI_Init()
    ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
    ESP_ERROR_CHECK( esp_wifi_start() );
    WIFI_Connect();
-
 }
  
 void WIFI_IP(void *pvParam)

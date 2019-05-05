@@ -15,7 +15,6 @@
 #include "driver/timer.h"
 #include "soc/timer_group_reg.h"
 
-
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/queue.h"
@@ -43,10 +42,17 @@ typedef struct  {
 
 xQueueHandle timer_queue;
 
+/* @brief The ISR used for resetting the timer and signalling events.
+@param void* arg is a pointer to any arguments passed in.*/
 void IRAM_ATTR timer0_isr(void *arg);
 
-bool Timer_Init(timers_t timerGN); //,void (*usrFn)(void*), void* usrArg, xQueueHandle timer_queue);
+/* @brief Sets up the required functions and modes for any Timer function.
+@param timers_t timerGN is the number of the timer to be initialized 
+*Note: this is only the timer number, not the group as I'm only using group 0 */
+bool Timer_Init(timers_t timerGN);
 
+/* @brief The event handler for do something when a timer's time has elasped.
+@param void* arg is a pointer to any arguments passed in.*/
 void timer0_evt(void *arg);
 
 #endif

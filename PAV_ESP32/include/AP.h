@@ -25,14 +25,19 @@
 #include "math.h"
 #include "fft.h"
 
-/* @brief Sets up the FTM before first use.*/
+/* @brief Sets up the required functions and modes for any AP function.*/
 void AP_Init();
 
+/* @brief Is used to calculate the Fast-Fourier Transform from the Mic.*/
 void AP_FFT();
 
+/* @brief Analyses the results of the FFT, comapring with the source to see if any frequencies resonate.
+@param double *input is the array of info fed into the resonator. 
+@param int inSize is the size of that array (use sizeof()).*/
 void AP_Resonator(double *input, int inSize);
 
-//Get
+/* @brief Reads the adc.
+@param void* arg is a pointer to any arguments passed in.*/
 void adc_read_task(void* arg);
 
 #endif
