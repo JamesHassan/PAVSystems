@@ -14,9 +14,9 @@ void WIFI_Connect()
          .password = WIFI_PASSWORD
       },
    };
-   ESP_ERROR_CHECK( esp_wifi_disconnect() );
-   ESP_ERROR_CHECK( esp_wifi_set_config(ESP_IF_WIFI_STA, &cfg) );
-   ESP_ERROR_CHECK( esp_wifi_connect() );
+   ESP_ERROR_CHECK(esp_wifi_disconnect());
+   ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &cfg));
+   ESP_ERROR_CHECK(esp_wifi_connect());
 }
 
 esp_err_t WIFI_event_handler(void *ctx, system_event_t *event)
@@ -44,9 +44,9 @@ void WIFI_Init()
    esp_log_level_set("wifi", ESP_LOG_NONE); // disable wifi driver logging
    tcpip_adapter_init();
    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-   ESP_ERROR_CHECK( esp_wifi_init(&cfg) );
-   ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
-   ESP_ERROR_CHECK( esp_wifi_start() );
+   ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+   ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+   ESP_ERROR_CHECK(esp_wifi_start());
    WIFI_Connect();
 }
  

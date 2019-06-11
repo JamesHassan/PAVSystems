@@ -88,17 +88,13 @@ void timer0_evt(void *arg)
             {
                 // FFT
                 AP_FFT();
-
-                // For checking jitter
                 /*
+                // For checking jitter
                 int level = gpio_get_level(GPIO_NUM_16);
                 if (level)
                     gpio_set_level(GPIO_NUM_16, 0);
                 else
-                {
                     gpio_set_level(GPIO_NUM_16, 1);
-
-                }
                 */
             }
         }

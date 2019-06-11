@@ -67,15 +67,15 @@ static void setup()
         ESP_ERROR_CHECK(nvs_flash_erase());
         nvserr = nvs_flash_init();
     }
-    ESP_ERROR_CHECK( nvserr );
+    ESP_ERROR_CHECK(nvserr);
 
     // RTC_Init(); // Isn't used and doesn't work - messes with printf
     AP_Init();
     
-    ESP_ERROR_CHECK( esp_event_loop_init(WIFI_event_handler, NULL) );
+    ESP_ERROR_CHECK(esp_event_loop_init(WIFI_event_handler, NULL));
     wifi_event_group = xEventGroupCreate();
     WIFI_Init();
-    /* Timers stuff, currently commented out because its done messing up*/
+    
     timer_queue = xQueueCreate(10, sizeof(timers_t));
     err = Timer_Init(timer00); //, Timer00CallBack, NULL, timer_queue); //timer00.timer_config.alarm_en;
     printf("timer_init == %d\n",err);
