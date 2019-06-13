@@ -1,3 +1,8 @@
+/*
+  @brief to control the inbuilt timers to influence functions periodically
+  @author James Hassan 11991559
+  @date 2019-04-05
+*/
 
 #ifndef Timer_H
 #define Timer_H
@@ -28,11 +33,11 @@
 #include "Wifi.h"
 
 typedef struct  {
-    timer_group_t timer_group;
-    timer_idx_t timer_num;
-    timer_config_t timer_config;
-    timer_isr_handle_t timer_intr;
-    double period;
+  timer_group_t timer_group;
+  timer_idx_t timer_num;
+  timer_config_t timer_config;
+  timer_isr_handle_t timer_intr;
+  double period;
 } timers_t;
 
 // timer defines

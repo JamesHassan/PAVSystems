@@ -1,7 +1,7 @@
 /*
-   @brief to utalise the inbuilt Real Time Clock (RTC) for control and operation, recording the time of events
-   @author James Hassan 11991559
-   @date 2019-03-29
+  @brief to utalise the inbuilt Real Time Clock (RTC) for control and operation, recording the time of events
+  @author James Hassan 11991559
+  @date 2019-03-29
 */
 
 #ifndef RTC_H

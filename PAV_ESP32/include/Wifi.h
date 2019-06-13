@@ -1,7 +1,7 @@
 /*
-   @brief to manage and connect wireless to the base station at periodic intervals. 
-   @author James Hassan 11991559
-   @date 2019-03-29
+  @brief to manage and connect wireless to the base station at periodic intervals. 
+  @author James Hassan 11991559
+  @date 2019-03-29
 */
 #ifndef WIFI_H
 #define WIFI_H
@@ -17,16 +17,16 @@
 #include "nvs_flash.h"
 
 /*Router*/
-#define WIFI_SSID "PAV Systems"
-#define WIFI_PASSWORD "pavsystem5"
+// #define WIFI_SSID "PAV Systems"
+// #define WIFI_PASSWORD "pavsystem5"
 /*******/
 
 /*Home*/
-// #define WIFI_SSID "Hampstead Homies_2.4GHz"
-// #define WIFI_PASSWORD "IMGLADYOUEXIST"
+#define WIFI_SSID "Hampstead Homies_2.4GHz"
+#define WIFI_PASSWORD "IMGLADYOUEXIST"
 /******/
 
-EventGroupHandle_t wifi_event_group;
+EventGroupHandle_t WIFI_connect_group;
 
 /* @brief For doing different activities reagrding the state the WIFI reciever is in.
 @param void *ctx is only used for the initialization.
