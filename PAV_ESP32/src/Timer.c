@@ -70,13 +70,13 @@ void timer0_evt(void *arg)
 
     if (xQueueReceive(timer_queue, &tempTimer, portMAX_DELAY))
     {
-      // printf("Group[%d], timer[%d] alarm event\n", tempTimer.timer_group, tempTimer.timer_num);
-
-      // /* Print the timer values as visible by this task */
-      // printf("-------- TASK TIME --------\n");
+      // /* Print which timer and their values */
+      // printf("---- Timer Event ----\n");
+      // printf("Group[%d], timer[%d]\n", tempTimer.timer_group, tempTimer.timer_num);
       // uint64_t task_counter_value;
       // timer_get_counter_value(tempTimer.timer_group, tempTimer.timer_num, &task_counter_value);
       // printf("%d\n",(int)task_counter_value);
+
       if (tempTimer.timer_num == 0)
       {
         // Connect to wifi, send info and disconnect
